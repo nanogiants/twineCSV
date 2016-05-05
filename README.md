@@ -1,9 +1,5 @@
 # TwineCSV
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/twineCSV`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
-
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -22,7 +18,29 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+This micro gem converts twine formatted txt files to csv and vice versa. The reason for this is that the localisation information is often provided by external services, which do not want to deal with restricted file formats but rather want to work with Excel or similar programs. Thus this gem was created to create csv files from your twine files. After you get your finalized csv files back you can convert them to a txt file, with the proper twine formatting. To get more information about twine in general visit their [github page](https://github.com/mobiata/twine).
+
+### Convert to csv
+
+```
+twineCSV totwine localisation.txt converted.csv
+```
+
+You have to proide at least the input file. When omitting the output file the filename is created based on the inputs filename.
+
+### Convert to twine file
+
+```
+twineCSV tocsv converted.txt localisation_new.txt
+```
+
+You have to proide at least the input file. When omitting the output file the filename is created based on the inputs filename.
+
+### Help
+
+```
+twineCSV help
+```
 
 ## Development
 
