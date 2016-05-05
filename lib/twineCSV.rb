@@ -23,7 +23,7 @@ module TwineCSV
       elsif current_key.length > 0
         lang, value = line.split("=").map(&:strip)
         langs << lang
-        dictionary[current_section][current_key][lang] = value
+        dictionary[current_section][current_key][lang] = value || ''
       end
     }
 
@@ -51,15 +51,15 @@ module TwineCSV
     langs = lines[0].split(';')[2..-1]
 
     lines[1..-1].each { |line|
-      values = line.split(";")
+      values = "#{line} ".split(";")
       old_section = current_section
       current_section = values.first
 
       if current_section != old_section
         result << "#{result.empty? ? '' : "\n"}[[#{current_section}]]"
-        result << "  [#{values[1]}]" << values[2..-1].map.with_index { |value,i| "    #{langs[i]} = #{value}"}
+        result << "  [#{values[1]}]" << values[2..-1].map.with_index { |value,i| "    #{langs[i]} = #{value.strip}"}
       else
-        result << "\n  [#{values[1]}]" << values[2..-1].map.with_index { |value,i| "    #{langs[i]} = #{value}"}
+        result << "\n  [#{values[1]}]" << values[2..-1].map.with_index { |value,i| "    #{langs[i]} = #{value.strip}"}
       end
     }
 

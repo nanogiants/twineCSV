@@ -1,0 +1,50 @@
+#!/usr/bin/env ruby
+
+require 'commander/import'
+require_relative '../lib/twineCSV'
+
+program :name, 'twineCSV'
+program :version, '1.0.0'
+program :description, 'Converts your twine formatted localisation file to CSV and vice versa'
+
+command :totwine do |c|
+  c.syntax = 'twineCSV totwine input [output]'
+  c.summary = 'Converts a csv file into a twine file'
+  c.description = 'Converts a csv file into a twine file. You have to provide at least the input file as first parameter. If the output file is omitted the output file will be named after the input file but with a proper extension.'
+  c.example 'Converts a csv file into a twine file', 'twineCSV totwine converted.csv localisation.txt'
+
+  c.action do |args, options|
+    abort("You have to provide at least a filename") if args[0].nil?
+
+    csv = args[0]
+    twine = args[1].nil? ? "#{args[0].split(".")[0]}.txt" : args[1].dup
+    twine << ".txt" unless twine.split(".")[-1] == 'txt'
+
+    puts "Converting input file #{csv}"
+
+    TwineCSV::to_twine csv, twine
+
+    puts "Done. Your output file is #{twine}"
+  end
+end
+
+command :tocsv do |c|
+  c.syntax = 'twineCSV tocsv input [output]'
+  c.summary = 'Converts a twine file into csv'
+  c.description = 'Converts a twine file into csv. You have to provide at least the input file as first parameter. If the output file is omitted the output file will be named after the input file but with a proper extension.'
+  c.example 'Convert a twine file into a csv file', 'twineCSV tocsv localisation.txt converted.csv'
+  c.action do |args, options|
+    abort("You have to provide at least a filename") if args[0].nil?
+
+    twine = args[0]
+    csv = args[1].nil? ? "#{args[0].split(".")[0]}.csv" : args[1].dup
+    csv << ".csv" unless csv.split(".")[-1] == 'csv'
+
+    puts "Converting input file #{twine}"
+
+    TwineCSV::to_csv twine, csv
+
+    puts "Done. Your output file is #{csv}"
+  end
+end
+
