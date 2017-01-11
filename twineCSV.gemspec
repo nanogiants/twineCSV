@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.summary = %q{twineCSV converts your twine localisation file to CSV and vice versa.}
   spec.description = %q{With twineCSV you can convert your localisation files to csv, so that others can edit them via Excel. After exporting it back to csv you can convert it to the twine format again.}
-  spec.homepage = "http://www.appcom-interctive.de"
+  spec.homepage = "https://github.com/dasheck0/twineCSV"
   spec.license = "MIT"
 
   # Prevent pushing this gem to RubyGems.org by setting 'allowed_push_host', or
