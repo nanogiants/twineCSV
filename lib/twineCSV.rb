@@ -6,7 +6,10 @@ module TwineCSV
   def self.to_csv input, output
     abort("The input file must not be nil") if input.nil? or output.nil?
     content = File.open(input, 'r').read
-    lines = content.each_line.to_a.map { |line| line.gsub("\n", '').strip }
+    lines = content.each_line.to_a.map { |line|
+      result = line.gsub("\n", '').strip
+      result[-1] == ";" ? result[0..-2] : result
+    }
     dictionary = {}
     langs = []
     current_key = ''
@@ -33,7 +36,7 @@ module TwineCSV
 
       dictionary.each { |k, v|
         v.each { |k2, v2|
-          vlangs = langs.uniq.map { |lang| v2[lang] }
+          vlangs = langs.uniq.map(&:downcase).map { |lang| v2[lang] }
           f << "#{k};#{k2};#{vlangs.join(";")}" << "\n"
         }
       }
@@ -57,9 +60,9 @@ module TwineCSV
 
       if current_section != old_section
         result << "#{result.empty? ? '' : "\n"}[[#{current_section}]]"
-        result << "  [#{values[1]}]" << values[2..-1].map.with_index { |value,i| "    #{langs[i]} = #{value.strip}"}
+        result << "  [#{values[1]}]" << values[2..-1].map.with_index { |value, i| "    #{langs[i].downcase} = #{value.strip}" unless langs[i].nil? }
       else
-        result << "\n  [#{values[1]}]" << values[2..-1].map.with_index { |value,i| "    #{langs[i]} = #{value.strip}"}
+        result << "\n  [#{values[1]}]" << values[2..-1].map.with_index { |value, i| "    #{langs[i].downcase} = #{value.strip}" unless langs[i].nil? }
       end
     }
 
