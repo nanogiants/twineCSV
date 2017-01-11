@@ -11,13 +11,13 @@ Gem::Specification.new do |spec|
 
   spec.summary = %q{twineCSV converts your twine localisation file to CSV and vice versa.}
   spec.description = %q{With twineCSV you can convert your localisation files to csv, so that others can edit them via Excel. After exporting it back to csv you can convert it to the twine format again.}
-  spec.homepage = "TODO: Put your gem's website or public repo URL here."
+  spec.homepage = "http://www.appcom-interctive.de"
   spec.license = "MIT"
 
   # Prevent pushing this gem to RubyGems.org by setting 'allowed_push_host', or
   # delete this section to allow pushing this gem to any host.
   if spec.respond_to?(:metadata)
-    spec.metadata['allowed_push_host'] = "TODO: Set to 'http://mygemserver.com'"
+    spec.metadata['allowed_push_host'] = "https://rubygems.org"
   else
     raise "RubyGems 2.0 or newer is required to protect against public gem pushes."
   end
