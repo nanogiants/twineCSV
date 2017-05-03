@@ -23,18 +23,18 @@ This micro gem converts twine formatted txt files to csv and vice versa. The rea
 ### Convert to csv
 
 ```
-twineCSV totwine localisation.txt converted.csv
+twineCSV tocsv localisation.txt converted.csv
 ```
 
-You have to proide at least the input file. When omitting the output file the filename is created based on the inputs filename.
+You have to provide at least the input file. When omitting the output file the filename is created based on the inputs filename.
 
 ### Convert to twine file
 
 ```
-twineCSV tocsv converted.csv localisation_new.txt
+twineCSV totwine converted.csv localisation.txt
 ```
 
-You have to proide at least the input file. When omitting the output file the filename is created based on the inputs filename.
+You have to provide at least the input file. When omitting the output file the filename is created based on the inputs filename.
 
 ### Help
 
