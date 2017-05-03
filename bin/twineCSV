@@ -2,9 +2,10 @@
 
 require 'commander/import'
 require_relative '../lib/twineCSV'
+require_relative '../lib/twineCSV/version.rb'
 
 program :name, 'twineCSV'
-program :version, '1.0.0'
+program :version, TwineCSV::VERSION
 program :description, 'Converts your twine formatted localisation file to CSV and vice versa'
 
 command :totwine do |c|
