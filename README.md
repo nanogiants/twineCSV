@@ -31,7 +31,7 @@ You have to proide at least the input file. When omitting the output file the fi
 ### Convert to twine file
 
 ```
-twineCSV tocsv converted.txt localisation_new.txt
+twineCSV tocsv converted.csv localisation_new.txt
 ```
 
 You have to proide at least the input file. When omitting the output file the filename is created based on the inputs filename.
