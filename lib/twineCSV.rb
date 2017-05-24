@@ -46,6 +46,7 @@ module TwineCSV
 
   def self.to_twine input, output
     abort("The input file must not be nil") if input.nil? or output.nil?
+    check_for_separator(input)
 
     content = File.open(input, 'r').read
     lines = content.each_line.to_a.map { |line| line.gsub("\n", '').strip }
@@ -69,7 +70,18 @@ module TwineCSV
     File.open(output, 'wb+') { |f|
       f << result.join("\n")
     }
+  end
 
+  def self.check_for_separator(input)
+    allowed_separators = [';']
+
+    content = File.open(input, 'r').read
+    lines = content.each_line.to_a.map { |line| line.gsub("\n", '').strip }
+    header_line = lines[0]
+
+    unless header_line.nil?
+      abort('No valid separator was found in the csv. Please use one of the following: ' + allowed_separators.join(' ')) unless allowed_separators.any? { |separator| header_line.include?(separator) }
+    end
   end
 
 end
