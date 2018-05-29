@@ -24,7 +24,7 @@ module TwineCSV
         current_key = line[1..-2]
         dictionary[current_section][current_key] = {}
       elsif current_key.length > 0
-        lang, value = line.split("=").map(&:strip)
+        lang, value = line.split("=", 2).map(&:strip)
         langs << lang
         dictionary[current_section][current_key][lang] = value || ''
       end
