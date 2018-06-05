@@ -36,7 +36,7 @@ module TwineCSV
 
       dictionary.each { |k, v|
         v.each { |k2, v2|
-          vlangs = langs.uniq.map(&:downcase).map { |lang| v2[lang] }
+          vlangs = langs.uniq.map { |lang| v2[lang] }
           f << "#{k};#{k2};#{vlangs.join(";")}" << "\n"
         }
       }
