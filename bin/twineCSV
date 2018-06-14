@@ -10,20 +10,20 @@ program :description, 'Converts your twine formatted localisation file to CSV an
 
 command :totwine do |c|
   c.syntax = 'twineCSV totwine input [output]'
-  c.summary = 'Converts a csv file into a twine file'
-  c.description = 'Converts a csv file into a twine file. You have to provide at least the input file as first parameter. If the output file is omitted the output file will be named after the input file but with a proper extension.'
-  c.example 'Converts a csv file into a twine file', 'twineCSV totwine converted.csv localisation.txt'
+  c.summary = 'Converts a csv or xlsx file into a twine file'
+  c.description = 'Converts a csv or xslx file into a twine file. You have to provide at least the input file as first parameter. If the output file is omitted the output file will be named after the input file but with a proper extension.'
+  c.example 'Converts a csv or xslx file into a twine file', 'twineCSV totwine converted.csv localisation.txt'
 
   c.action do |args, options|
     abort("You have to provide at least a filename") if args[0].nil?
 
-    csv = args[0]
+    file = args[0]
     twine = args[1].nil? ? "#{args[0].split(".")[0]}.txt" : args[1].dup
     twine << ".txt" unless twine.split(".")[-1] == 'txt'
 
-    puts "Converting input file #{csv}"
+    puts "Converting input file #{file}"
 
-    TwineCSV::to_twine csv, twine
+    TwineCSV::to_twine file, twine
 
     puts "Done. Your output file is #{twine}"
   end

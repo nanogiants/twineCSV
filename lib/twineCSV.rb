@@ -47,30 +47,66 @@ module TwineCSV
 
   def self.to_twine input, output
     abort("The input file must not be nil") if input.nil? or output.nil?
-    check_for_separator(input)
+    extension = input.split('.')[-1]
 
-    content = File.open(input, 'r').read
-    lines = content.each_line.to_a.map {|line| line.gsub("\n", '').strip}
-    current_section = ''
-    result = []
-    langs = lines[0].split(';')[2..-1]
+    if extension == 'csv'
+      check_for_separator(input)
 
-    lines[1..-1].each {|line|
-      values = "#{line} ".split(";")
-      old_section = current_section
-      current_section = values.first
+      content = File.open(input, 'r').read
+      lines = content.each_line.to_a.map {|line| line.gsub("\n", '').strip}
+      current_section = ''
+      result = []
+      langs = lines[0].split(';')[2..-1]
 
-      if current_section != old_section
-        result << "#{result.empty? ? '' : "\n"}[[#{current_section}]]"
-        result << "  [#{values[1]}]" << values[2..-1].map.with_index {|value, i| "    #{langs[i].downcase} = #{value.strip}" unless langs[i].nil?}
-      else
-        result << "\n  [#{values[1]}]" << values[2..-1].map.with_index {|value, i| "    #{langs[i].downcase} = #{value.strip}" unless langs[i].nil?}
-      end
-    }
+      lines[1..-1].each {|line|
+        values = "#{line} ".split(";")
+        old_section = current_section
+        current_section = values.first
 
-    File.open(output, 'wb+') {|f|
-      f << result.join("\n")
-    }
+        if current_section != old_section
+          result << "#{result.empty? ? '' : "\n"}[[#{current_section}]]"
+          result << "  [#{values[1]}]" << values[2..-1].map.with_index {|value, i| "    #{langs[i].downcase} = #{value.strip}" unless langs[i].nil?}
+        else
+          result << "\n  [#{values[1]}]" << values[2..-1].map.with_index {|value, i| "    #{langs[i].downcase} = #{value.strip}" unless langs[i].nil?}
+        end
+      }
+
+      File.open(output, 'wb+') {|f|
+        f << result.join("\n")
+      }
+    elsif extension == 'xlsx'
+      workbook = RubyXL::Parser.parse input
+
+      worksheet = workbook[0]
+      langs = []
+      result = []
+
+      current_section = ''
+      worksheet.each_with_index {|row, row_index|
+        row && row.cells.each_with_index {|cell, cell_index|
+          if cell_index > 1
+            if row_index == 0
+              langs << cell&.value
+            else
+              result << "    #{langs[cell_index-2]} = #{cell&.value.strip}#{"\n" if cell_index - 2 >= langs.length-1}"
+            end
+          elsif cell_index == 1
+            result << "  [#{cell&.value}]" unless row_index == 0
+          elsif cell_index == 0
+            old_section = current_section
+            current_section = cell&.value
+
+            result << "[[#{cell&.value}]]" unless row_index == 0 or old_section == current_section
+          end
+        }
+
+        File.open(output, 'wb+') {|f|
+          f << result.join("\n")
+        }
+      }
+    else
+      abort("The filetype #{extension} is currently not supported")
+    end
   end
 
   def self.to_xlsx input, output
