@@ -49,3 +49,22 @@ command :tocsv do |c|
   end
 end
 
+command :toxlsx do |c|
+  c.syntax = 'twinCSV toxlsx input [output]'
+  c.summary = 'Converts a twine file into an Excel Spreadsheet'
+  c.description = 'Converts a twine file into an Excel Spreadsheet. You have to provide at least the input file as first parameter. If the output file is omitted the output file will be named after the input file but with a proper extension.'
+  c.example 'Convert a twine file into a xlsx file', 'twineCSV toxlsx localisation.txt converted.xlsx'
+  c.action do |args, options|
+    abort('You have to provide at least a filename') if args[0].nil?
+
+    twine = args[0]
+    xlsx = args[1].nil? ? "#{args[0].split(".")[0]}.xlsx" : args[1].dup
+    xlsx << ".xlsx" unless xlsx.split('.')[-1] == 'xlsx'
+
+    puts "Converting input file #{twine}"
+
+    TwineCSV::to_xlsx twine, xlsx
+
+    puts "Done. Your output file is #{xlsx}"
+  end
+end

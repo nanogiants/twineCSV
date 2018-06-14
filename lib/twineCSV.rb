@@ -1,12 +1,13 @@
 require "twineCSV/version"
 require 'rubygems'
+require 'rubyXL'
 
 module TwineCSV
 
   def self.to_csv input, output
     abort("The input file must not be nil") if input.nil? or output.nil?
     content = File.open(input, 'r').read
-    lines = content.each_line.to_a.map { |line|
+    lines = content.each_line.to_a.map {|line|
       result = line.gsub("\n", '').strip
       result[-1] == ";" ? result[0..-2] : result
     }
@@ -15,7 +16,7 @@ module TwineCSV
     current_key = ''
     current_section = ''
 
-    lines.reject { |line| line.length == 0 }.each { |line|
+    lines.reject {|line| line.length == 0}.each {|line|
       if line.start_with? '[['
         current_section = line[2..-3]
         puts current_section
@@ -30,13 +31,13 @@ module TwineCSV
       end
     }
 
-    File.open(output, 'wb+') { |f|
+    File.open(output, 'wb+') {|f|
 
       f << 'section;key;' << langs.uniq.join(';') << "\n"
 
-      dictionary.each { |k, v|
-        v.each { |k2, v2|
-          vlangs = langs.uniq.map { |lang| v2[lang] }
+      dictionary.each {|k, v|
+        v.each {|k2, v2|
+          vlangs = langs.uniq.map {|lang| v2[lang]}
           f << "#{k};#{k2};#{vlangs.join(";")}" << "\n"
         }
       }
@@ -49,38 +50,105 @@ module TwineCSV
     check_for_separator(input)
 
     content = File.open(input, 'r').read
-    lines = content.each_line.to_a.map { |line| line.gsub("\n", '').strip }
+    lines = content.each_line.to_a.map {|line| line.gsub("\n", '').strip}
     current_section = ''
     result = []
     langs = lines[0].split(';')[2..-1]
 
-    lines[1..-1].each { |line|
+    lines[1..-1].each {|line|
       values = "#{line} ".split(";")
       old_section = current_section
       current_section = values.first
 
       if current_section != old_section
         result << "#{result.empty? ? '' : "\n"}[[#{current_section}]]"
-        result << "  [#{values[1]}]" << values[2..-1].map.with_index { |value, i| "    #{langs[i].downcase} = #{value.strip}" unless langs[i].nil? }
+        result << "  [#{values[1]}]" << values[2..-1].map.with_index {|value, i| "    #{langs[i].downcase} = #{value.strip}" unless langs[i].nil?}
       else
-        result << "\n  [#{values[1]}]" << values[2..-1].map.with_index { |value, i| "    #{langs[i].downcase} = #{value.strip}" unless langs[i].nil? }
+        result << "\n  [#{values[1]}]" << values[2..-1].map.with_index {|value, i| "    #{langs[i].downcase} = #{value.strip}" unless langs[i].nil?}
       end
     }
 
-    File.open(output, 'wb+') { |f|
+    File.open(output, 'wb+') {|f|
       f << result.join("\n")
     }
+  end
+
+  def self.to_xlsx input, output
+    abort("The input file must not be nil") if input.nil? or output.nil?
+    content = File.open(input, 'r').read
+
+    lines = content.each_line.to_a.map {|line|
+      result = line.gsub("\n", '').strip
+      result[-1] == ";" ? result[0..-2] : result
+    }
+    dictionary = {}
+    langs = []
+    current_key = ''
+    current_section = ''
+
+    lines.reject {|line| line.length == 0}.each {|line|
+      if line.start_with? '[['
+        current_section = line[2..-3]
+        puts current_section
+        dictionary[current_section] = {}
+      elsif line.start_with? '['
+        current_key = line[1..-2]
+        dictionary[current_section][current_key] = {}
+      elsif current_key.length > 0
+        lang, value = line.split("=", 2).map(&:strip)
+        langs << lang
+        dictionary[current_section][current_key][lang] = value || ''
+      end
+    }
+
+    workbook = RubyXL::Workbook.new
+    worksheet = workbook[0]
+    worksheet.sheet_name = 'Translation'
+
+    worksheet.add_cell 0, 0, 'Section'
+    worksheet.add_cell 0, 1, 'Key'
+
+    worksheet.change_column_width 0, 0
+    worksheet.change_column_width 1, 0
+
+    langs.uniq.each_with_index.map {|item, index|
+      worksheet.add_cell 0, index + 2, item
+      worksheet.change_column_width index + 2, 80
+    }
+
+    worksheet.change_row_border 0, :bottom, 'medium'
+    worksheet.change_row_bold 0, true
+
+    row = 1
+
+    dictionary.each {|k, v|
+      v.each {|k2, v2|
+        vlangs = langs.uniq.map {|lang| v2[lang]}
+        worksheet.add_cell row, 0, k
+        worksheet.add_cell row, 1, k2
+
+        vlangs.each_with_index {|item, column|
+          cell = worksheet.add_cell row, column + 2, item
+          cell.change_text_wrap true
+          worksheet.change_row_fill row, 'cc3300' if item == ''
+        }
+
+        row += 1
+      }
+    }
+
+    workbook.write output
   end
 
   def self.check_for_separator(input)
     allowed_separators = [';']
 
     content = File.open(input, 'r').read
-    lines = content.each_line.to_a.map { |line| line.gsub("\n", '').strip }
+    lines = content.each_line.to_a.map {|line| line.gsub("\n", '').strip}
     header_line = lines[0]
 
     unless header_line.nil?
-      abort('No valid separator was found in the csv. Please use one of the following: ' + allowed_separators.join(' ')) unless allowed_separators.any? { |separator| header_line.include?(separator) }
+      abort('No valid separator was found in the csv. Please use one of the following: ' + allowed_separators.join(' ')) unless allowed_separators.any? {|separator| header_line.include?(separator)}
     end
   end
 
