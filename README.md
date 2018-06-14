@@ -18,12 +18,24 @@ Or install it yourself as:
 
 ## Usage
 
-This micro gem converts twine formatted txt files to csv and vice versa. The reason for this is that the localisation information is often provided by external services, which do not want to deal with restricted file formats but rather want to work with Excel or similar programs. Thus this gem was created to create csv files from your twine files. After you get your finalized csv files back you can convert them to a txt file, with the proper twine formatting. To get more information about twine in general visit their [github page](https://github.com/mobiata/twine).
+This micro gem converts twine formatted txt files to csv or xlsx and vice versa. The reason for this is that the localisation 
+information is often provided by external services, which do not want to deal with restricted file formats but rather
+want to work with Excel or similar programs. Thus this gem was created to create csv or xlsx files from your twine files. 
+After you get your finalized csv or xlsx files back you can convert them to a txt file, with the proper twine formatting. 
+To get more information about twine in general visit their [github page](https://github.com/mobiata/twine).
+
+Support for xlsx files since version 1.1.0.
 
 ### Convert to csv
 
 ```
 twineCSV tocsv localisation.txt converted.csv
+```
+
+### Convert to xlsx
+
+```
+twineCSV toxlsx localisation.txt converted.xlsx
 ```
 
 You have to provide at least the input file. When omitting the output file the filename is created based on the inputs filename.
@@ -32,6 +44,10 @@ You have to provide at least the input file. When omitting the output file the f
 
 ```
 twineCSV totwine converted.csv localisation.txt
+```
+
+```
+twineCSV totwine converted.xlsx localisation.txt
 ```
 
 You have to provide at least the input file. When omitting the output file the filename is created based on the inputs filename.
@@ -50,7 +66,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/twineCSV. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/dasheck0/twineCSV. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 
 ## License
