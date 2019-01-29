@@ -88,7 +88,8 @@ module TwineCSV
             if row_index == 0
               langs << cell&.value
             else
-              result << "    #{langs[cell_index-2]} = #{cell&.value.strip}#{"\n" if cell_index - 2 >= langs.length-1}"
+              puts "cwl #{cell.value} #{row_index} #{cell_index}"
+              result << "    #{langs[cell_index-2]} = #{(cell&.value || '').strip}#{"\n" if cell_index - 2 >= langs.length-1}" unless langs[cell_index-2].nil?
             end
           elsif cell_index == 1
             result << "  [#{cell&.value}]" unless row_index == 0
