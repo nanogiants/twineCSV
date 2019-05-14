@@ -1,5 +1,7 @@
 # TwineCSV
 
+[![Gem Version](https://badge.fury.io/rb/twineCSV.svg)](https://badge.fury.io/rb/twineCSV)
+
 ## Installation
 
 Add this line to your application's Gemfile:
